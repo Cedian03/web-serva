@@ -29,8 +29,9 @@ impl FromStr for Request {
         let headers = lines
             .by_ref()
             .take_while(|line| !line.is_empty())
-            .map(|line| line.split_once(':').map(|(k, v)| (k.trim().to_owned(), v.trim().to_owned())).expect("invalid header")) // TODO
-            .collect();
+            .map(|line| line.split_once(':').map(|(k, v)| (k.trim().to_owned(), v.trim().to_owned())))
+            .collect::<Option<_>>()
+            .ok_or(ParseRequestError)?;
 
         let body = lines.collect();
 
